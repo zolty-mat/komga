@@ -1,11 +1,17 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { server } from '@/mocks/api/node'
-import { useRefreshMetadataBook, useAnalyzeBook, useMarkBookRead } from '@/colada/books'
+import {
+  useRefreshMetadataBook,
+  useAnalyzeBook,
+  useMarkBookRead,
+  bookDetailQuery,
+} from '@/colada/books'
 import { createMockColada } from '@/mocks/pinia-colada'
 import { enableAutoUnmount } from '@vue/test-utils'
 import type { ErrorCause } from '@/api/komga-client'
 import { response401Unauthorized } from '@/mocks/api/handlers'
 import { http } from 'msw'
+import { useQuery } from '@pinia/colada'
 
 beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
@@ -77,6 +83,23 @@ describe('colada books', () => {
     } catch (e) {
       // Expected to fail
     }
+    expect(error.value).toBeDefined()
+  })
+
+  test('when book detail query succeeds then book data is returned', async () => {
+    createMockColada(() => useQuery(() => bookDetailQuery({ bookId: '05RKH8CC8B4RW' })))
+    const { data } = useQuery(() => bookDetailQuery({ bookId: '05RKH8CC8B4RW' }))
+
+    await new Promise((resolve) => setTimeout(resolve, 10))
+    expect(data.value).toBeDefined()
+    expect(data.value?.id).toBe('05RKH8CC8B4RW')
+  })
+
+  test('when book detail endpoint returns 404, error is set', async () => {
+    createMockColada(() => useQuery(() => bookDetailQuery({ bookId: '404' })))
+    const { data, error } = useQuery(() => bookDetailQuery({ bookId: '404' }))
+
+    await new Promise((resolve) => setTimeout(resolve, 10))
     expect(error.value).toBeDefined()
   })
 })
