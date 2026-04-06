@@ -111,6 +111,8 @@ declare module 'vue' {
     RemoteFileList: typeof import('./components/RemoteFileList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchAuthorCard: typeof import('./components/search/AuthorCard.vue')['default']
+    SearchFilters: typeof import('./components/search/SearchFilters.vue')['default']
     SelectionBar: typeof import('./components/selection/Bar.vue')['default']
     SeriesCard: typeof import('./components/series/card/SeriesCard.vue')['default']
     SeriesCardWide: typeof import('./components/series/CardWide/SeriesCardWide.vue')['default']

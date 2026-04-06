@@ -223,6 +223,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/search/': RouteRecordInfo<
+      '/search/',
+      '/search',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/server/activity': RouteRecordInfo<
       '/server/activity',
       '/server/activity',
@@ -469,6 +476,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/media/missing-posters.vue': {
       routes:
         | '/media/missing-posters'
+      views:
+        | never
+    }
+    'src/pages/search/index.vue': {
+      routes:
+        | '/search/'
       views:
         | never
     }
