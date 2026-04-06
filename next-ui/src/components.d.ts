@@ -101,6 +101,8 @@ declare module 'vue' {
     PagingSelector: typeof import('./components/PagingSelector.vue')['default']
     PosterSizeSlider: typeof import('./components/PosterSizeSlider.vue')['default']
     PresentationSelector: typeof import('./components/PresentationSelector.vue')['default']
+    ReadlistCreateDialog: typeof import('./components/ReadlistCreateDialog.vue')['default']
+    ReadlistEditDialog: typeof import('./components/ReadlistEditDialog.vue')['default']
     ReleaseCard: typeof import('./components/release/Card.vue')['default']
     RemoteFileList: typeof import('./components/RemoteFileList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

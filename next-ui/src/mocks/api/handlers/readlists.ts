@@ -158,7 +158,7 @@ const rl1 = {
 }
 
 const rl2 = {
-  id: '02AQZYKBS00J8',
+  id: '02AQZYKBS00J9',
   name: 'Elfes',
   summary: 'Elfes readlist',
   ordered: false,
@@ -168,7 +168,7 @@ const rl2 = {
   filtered: false,
 }
 
-const readlists = [rl1, rl2]
+let readlists = [rl1, rl2]
 
 export const readListsHandlers = [
   httpTyped.get('/api/v1/readlists', ({ query, response }) => {
@@ -188,15 +188,69 @@ export const readListsHandlers = [
       ),
     )
   }),
+  httpTyped.get('/api/v1/readlists/:id', ({ params, response }) => {
+    const readlist = readlists.find((it) => it.id === params.id)
+    if (!readlist) {
+      return response(404).json({ error: 'Not Found' })
+    }
+    return response(200).json(readlist)
+  }),
+  httpTyped.get('/api/v1/readlists/:id/books', ({ params, query, response }) => {
+    const readlist = readlists.find((it) => it.id === params.id)
+    if (!readlist) {
+      return response(404).json({ error: 'Not Found' })
+    }
+    // Return mock books for the readlist
+    return response(200).json(
+      mockPage(
+        readlist.bookIds.map((bookId, idx) => ({
+          id: bookId,
+          name: `Book ${idx + 1}`,
+          number: `${idx + 1}`,
+          seriesId: 'series1',
+        })),
+        new PageRequest(
+          Number(query.get('page')),
+          Number(query.get('size')),
+          undefined,
+          Boolean(query.get('unpaged')),
+        ),
+      ),
+    )
+  }),
   httpTyped.post('/api/v1/readlists', async ({ request, response }) => {
     const body = await request.json()
-    return response(200).json({
+    const newReadlist = {
       ...body,
       createdDate: new Date(),
       lastModifiedDate: new Date(),
       id: (Math.random() + 1).toString(36).substring(7),
       filtered: false,
-    })
+    }
+    readlists.push(newReadlist)
+    return response(200).json(newReadlist)
+  }),
+  httpTyped.patch('/api/v1/readlists/:id', async ({ params, request, response }) => {
+    const readlist = readlists.find((it) => it.id === params.id)
+    if (!readlist) {
+      return response(404).json({ error: 'Not Found' })
+    }
+    const body = await request.json()
+    const updated = {
+      ...readlist,
+      ...body,
+      lastModifiedDate: new Date(),
+    }
+    readlists = readlists.map((it) => (it.id === params.id ? updated : it))
+    return response(200).json(updated)
+  }),
+  httpTyped.delete('/api/v1/readlists/:id', ({ params, response }) => {
+    const idx = readlists.findIndex((it) => it.id === params.id)
+    if (idx === -1) {
+      return response(404).json({ error: 'Not Found' })
+    }
+    readlists = readlists.filter((it) => it.id !== params.id)
+    return response(204).text('')
   }),
   httpTyped.post('/api/v1/readlists/match/comicrack', ({ response }) => {
     return response(200).json(matchCbl)

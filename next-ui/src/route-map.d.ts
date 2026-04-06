@@ -111,7 +111,9 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<false> },
       | '/libraries/[id]/books'
       | '/libraries/[id]/collections'
+      | '/libraries/[id]/collections/[collectionId]'
       | '/libraries/[id]/readlists'
+      | '/libraries/[id]/readlists/[readlistId]'
       | '/libraries/[id]/recommended'
       | '/libraries/[id]/series'
       | '/libraries/[id]/series/[seriesId]'
@@ -128,6 +130,13 @@ declare module 'vue-router/auto-routes' {
       '/libraries/:id/collections',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | '/libraries/[id]/collections/[collectionId]'
+    >,
+    '/libraries/[id]/collections/[collectionId]': RouteRecordInfo<
+      '/libraries/[id]/collections/[collectionId]',
+      '/libraries/:id/collections/:collectionId',
+      { id: ParamValue<true>, collectionId: ParamValue<true> },
+      { id: ParamValue<false>, collectionId: ParamValue<false> },
       | never
     >,
     '/libraries/[id]/readlists': RouteRecordInfo<
@@ -135,6 +144,13 @@ declare module 'vue-router/auto-routes' {
       '/libraries/:id/readlists',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | '/libraries/[id]/readlists/[readlistId]'
+    >,
+    '/libraries/[id]/readlists/[readlistId]': RouteRecordInfo<
+      '/libraries/[id]/readlists/[readlistId]',
+      '/libraries/:id/readlists/:readlistId',
+      { id: ParamValue<true>, readlistId: ParamValue<true> },
+      { id: ParamValue<false>, readlistId: ParamValue<false> },
       | never
     >,
     '/libraries/[id]/recommended': RouteRecordInfo<
@@ -170,6 +186,13 @@ declare module 'vue-router/auto-routes' {
       '/media/analysis',
       Record<never, never>,
       Record<never, never>,
+      | never
+    >,
+    '/media/books/[bookId]': RouteRecordInfo<
+      '/media/books/[bookId]',
+      '/media/books/:bookId',
+      { bookId: ParamValue<true> },
+      { bookId: ParamValue<false> },
       | never
     >,
     '/media/duplicate-files': RouteRecordInfo<
@@ -340,7 +363,9 @@ declare module 'vue-router/auto-routes' {
         | '/libraries/[id]'
         | '/libraries/[id]/books'
         | '/libraries/[id]/collections'
+        | '/libraries/[id]/collections/[collectionId]'
         | '/libraries/[id]/readlists'
+        | '/libraries/[id]/readlists/[readlistId]'
         | '/libraries/[id]/recommended'
         | '/libraries/[id]/series'
         | '/libraries/[id]/series/[seriesId]'
@@ -356,12 +381,26 @@ declare module 'vue-router/auto-routes' {
     'src/pages/libraries/[id]/collections.vue': {
       routes:
         | '/libraries/[id]/collections'
+        | '/libraries/[id]/collections/[collectionId]'
+      views:
+        | 'default'
+    }
+    'src/pages/libraries/[id]/collections/[collectionId].vue': {
+      routes:
+        | '/libraries/[id]/collections/[collectionId]'
       views:
         | never
     }
     'src/pages/libraries/[id]/readlists.vue': {
       routes:
         | '/libraries/[id]/readlists'
+        | '/libraries/[id]/readlists/[readlistId]'
+      views:
+        | 'default'
+    }
+    'src/pages/libraries/[id]/readlists/[readlistId].vue': {
+      routes:
+        | '/libraries/[id]/readlists/[readlistId]'
       views:
         | never
     }
@@ -393,6 +432,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/media/analysis.vue': {
       routes:
         | '/media/analysis'
+      views:
+        | never
+    }
+    'src/pages/media/books/[bookId].vue': {
+      routes:
+        | '/media/books/[bookId]'
       views:
         | never
     }
