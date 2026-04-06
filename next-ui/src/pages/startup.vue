@@ -23,6 +23,7 @@
 <script lang="ts" setup>
 import { useCurrentUser } from '@/colada/users'
 import { useClaimStatus } from '@/colada/claim'
+import { komgaClient } from '@/api/komga-client'
 
 definePage({ alias: '/next' })
 
@@ -31,6 +32,23 @@ async function checkAuthenticated() {
   const route = useRoute()
   const { data, error, refresh } = useCurrentUser()
   const { data: claimData, error: claimError, refresh: claimRefresh } = useClaimStatus()
+
+  // Exchange header token for cookie if present in query parameters
+  const xAuthToken = route.query.xAuthToken as string | undefined
+  if (xAuthToken) {
+    try {
+      await komgaClient.GET('/api/v1/login/set-cookie', {
+        headers: {
+          'X-Auth-Token': xAuthToken,
+        },
+      })
+      // Remove token from URL for clean history
+      await router.replace({ query: { redirect: route.query.redirect } })
+    } catch {
+      // If token exchange fails, continue to authentication flow
+      // The user will be redirected to login/claim as appropriate
+    }
+  }
 
   await refresh()
   await claimRefresh()
@@ -48,8 +66,6 @@ async function checkAuthenticated() {
 }
 
 onMounted(() => checkAuthenticated())
-
-// TODO: exchange header token for cookie
 </script>
 
 <route lang="yaml">
