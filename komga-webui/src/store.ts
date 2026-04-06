@@ -8,6 +8,7 @@ import {LibraryDto} from '@/types/komga-libraries'
 import {ReadListDto} from '@/types/komga-readlists'
 import {ItemDto, JsonFeedDto} from '@/types/json-feed'
 import {isEmpty} from 'lodash'
+import recommendations from './store-modules/recommendations'
 
 Vue.use(Vuex)
 
@@ -295,6 +296,7 @@ export default new Vuex.Store({
   },
   modules: {
     persistedState: persistedModule,
+    recommendations,
   },
   plugins: [persistedState],
 })

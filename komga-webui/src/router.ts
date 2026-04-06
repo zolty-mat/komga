@@ -79,6 +79,12 @@ const router = new Router({
           component: () => import(/* webpackChunkName: "dashboard" */ './views/DashboardView.vue'),
         },
         {
+          path: '/recommendations',
+          name: 'recommendations',
+          beforeEnter: noLibraryGuard,
+          component: () => import(/* webpackChunkName: "recommendations" */ './views/Recommendations.vue'),
+        },
+        {
           path: '/settings/users',
           name: 'settings-users',
           beforeEnter: adminGuard,
