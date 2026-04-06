@@ -9,6 +9,18 @@ export const QUERY_KEYS_CLIENT_SETTINGS = {
   user: () => [...QUERY_KEYS_CLIENT_SETTINGS.root, 'user'] as const,
 }
 
+export const useClientSettingsGlobal = defineQuery(() => {
+  return useQuery({
+    key: () => QUERY_KEYS_CLIENT_SETTINGS.global(),
+    query: () =>
+      komgaClient
+        .GET('/api/v1/client-settings/global/list')
+        .then((res) => res.data),
+    staleTime: 60 * 60 * 1000, // 1 hour
+    gcTime: false,
+  })
+})
+
 export const useClientSettingsUser = defineQuery(() => {
   const { data, ...rest } = useQuery({
     key: () => QUERY_KEYS_CLIENT_SETTINGS.user(),
