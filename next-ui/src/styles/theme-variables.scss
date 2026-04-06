@@ -1,0 +1,101 @@
+/**
+ * src/styles/theme-variables.scss
+ *
+ * CSS custom properties for dynamic theming
+ */
+
+// Light mode defaults
+:root {
+  // Colors
+  --color-primary: #005ed3;
+  --color-secondary: #fec000;
+  --color-accent: #ff0335;
+  --color-surface: #ffffff;
+  --color-error: #b3261e;
+  --color-warning: #f9a825;
+  --color-success: #188038;
+  --color-info: #1b6ef3;
+
+  // Typography
+  --font-family: system-ui, -apple-system, sans-serif;
+  --font-size-scale: 1;
+  --line-height: 1.5;
+
+  // Spacing
+  --spacing-scale: 1;
+  --spacing-unit: 4px;
+  --spacing-xs: calc(var(--spacing-unit) * var(--spacing-scale));
+  --spacing-sm: calc(var(--spacing-unit) * 2 * var(--spacing-scale));
+  --spacing-md: calc(var(--spacing-unit) * 4 * var(--spacing-scale));
+  --spacing-lg: calc(var(--spacing-unit) * 6 * var(--spacing-scale));
+  --spacing-xl: calc(var(--spacing-unit) * 8 * var(--spacing-scale));
+
+  // Border radius
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+
+  // Shadows
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.25);
+
+  // Transitions
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+}
+
+// Dark mode
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #78baec;
+    --color-secondary: #fec000;
+    --color-accent: #ff0335;
+    --color-surface: #121212;
+    --color-error: #f2b8b5;
+    --color-warning: #ffe0b2;
+    --color-success: #a6d955;
+    --color-info: #90caf9;
+  }
+}
+
+// Export for JavaScript consumption
+:export {
+  colorPrimary: var(--color-primary);
+  colorSecondary: var(--color-secondary);
+  colorAccent: var(--color-accent);
+  colorSurface: var(--color-surface);
+  colorError: var(--color-error);
+  colorWarning: var(--color-warning);
+  colorSuccess: var(--color-success);
+  colorInfo: var(--color-info);
+
+  fontFamily: var(--font-family);
+  fontSizeScale: var(--font-size-scale);
+  lineHeight: var(--line-height);
+
+  spacingScale: var(--spacing-scale);
+  spacingUnit: var(--spacing-unit);
+  spacingXs: var(--spacing-xs);
+  spacingSm: var(--spacing-sm);
+  spacingMd: var(--spacing-md);
+  spacingLg: var(--spacing-lg);
+  spacingXl: var(--spacing-xl);
+
+  borderRadiusXs: var(--border-radius-xs);
+  borderRadiusSm: var(--border-radius-sm);
+  borderRadiusMd: var(--border-radius-md);
+  borderRadiusLg: var(--border-radius-lg);
+
+  shadowSm: var(--shadow-sm);
+  shadowMd: var(--shadow-md);
+  shadowLg: var(--shadow-lg);
+  shadowXl: var(--shadow-xl);
+
+  transitionFast: var(--transition-fast);
+  transitionNormal: var(--transition-normal);
+  transitionSlow: var(--transition-slow);
+}

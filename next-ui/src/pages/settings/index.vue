@@ -71,6 +71,17 @@
               })
             "
           />
+
+          <v-tab
+            value="appearance"
+            :text="
+              $formatMessage({
+                description: 'Settings page: appearance tab',
+                defaultMessage: 'Appearance',
+                id: 'settings-appearance-tab',
+              })
+            "
+          />
         </v-tabs>
       </v-col>
     </v-row>
@@ -566,6 +577,11 @@
         <ChangePasswordDialog v-model:dialog="showPasswordDialog" />
         <DeleteAccountDialog v-model:dialog="showDeleteAccountDialog" />
       </v-window-item>
+
+      <!-- Appearance Tab -->
+      <v-window-item value="appearance">
+        <AppearanceSettings />
+      </v-window-item>
     </v-window>
   </v-container>
 </template>
@@ -580,6 +596,7 @@ import { useQuery } from '@pinia/colada'
 import GenerateApiKeyDialog from '@/components/apikey/GenerateDialog.vue'
 import ChangePasswordDialog from '@/components/ChangePasswordDialog.vue'
 import DeleteAccountDialog from '@/components/DeleteAccountDialog.vue'
+import AppearanceSettings from './appearance.vue'
 import { useRouter } from 'vue-router'
 
 const intl = useIntl()

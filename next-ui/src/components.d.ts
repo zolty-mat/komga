@@ -138,6 +138,8 @@ declare module 'vue' {
     SortList: typeof import('./components/sort/List.vue')['default']
     SortTriState: typeof import('./components/sort/TriState.vue')['default']
     TempDrawer: typeof import('./components/TempDrawer.vue')['default']
+    ThemeCustomizer: typeof import('./components/theme/ThemeCustomizer.vue')['default']
+    ThemePreview: typeof import('./components/theme/ThemePreview.vue')['default']
     ThemeSelector: typeof import('./components/ThemeSelector.vue')['default']
     UserAuthenticationActivityTable: typeof import('./components/user/AuthenticationActivityTable.vue')['default']
     UserDeletionWarning: typeof import('./components/user/DeletionWarning.vue')['default']
