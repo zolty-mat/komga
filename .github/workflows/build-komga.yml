@@ -37,8 +37,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Backend & Copy UI
-        run: ./gradlew :komga:webuiCopyIndex :komga:nextuiCopyIndex :komga:bootJar
+      - name: Build Backend (bootJar)
+        run: ./gradlew :komga:bootJar
 
       - name: Build Next-UI
         working-directory: next-ui
@@ -46,10 +46,42 @@ jobs:
           npm ci
           npm run build
 
-      - name: Package Docker Image
-        env:
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew jreleaserPackage
+      - name: Prepare Docker context
+        run: |
+          mkdir -p docker-context
+          JAR=$(ls komga/build/libs/komga-*.jar | head -1)
+          cp "$JAR" docker-context/application.jar
+          cd docker-context
+          java -Djarmode=tools -jar application.jar extract --layers --destination extracted
+
+          cat > Dockerfile << 'EOF'
+          FROM ubuntu:24.10
+          ENV JAVA_HOME=/opt/java/openjdk
+          COPY --from=eclipse-temurin:23-jre $JAVA_HOME $JAVA_HOME
+          ENV PATH="${JAVA_HOME}/bin:${PATH}"
+          RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list.d/ubuntu.sources && \
+              apt -y update && \
+              apt -y install ca-certificates locales libjxl-dev libheif-dev libwebp-dev libarchive-dev wget curl && \
+              echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
+              locale-gen en_US.UTF-8 && \
+              wget "https://github.com/pgaskin/kepubify/releases/latest/download/kepubify-linux-64bit" -O /usr/bin/kepubify && \
+              chmod +x /usr/bin/kepubify && \
+              apt -y autoremove && rm -rf /var/lib/apt/lists/*
+          ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu"
+          VOLUME /config
+          WORKDIR /app
+          COPY extracted/dependencies/ ./
+          COPY extracted/spring-boot-loader/ ./
+          COPY extracted/snapshot-dependencies/ ./
+          COPY extracted/application/ ./
+          ENV KOMGA_CONFIGDIR="/config"
+          ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+          RUN groupadd --system komga && useradd --system --gid komga --no-create-home komga
+          USER komga
+          ENTRYPOINT ["java", "-Dspring.profiles.include=docker", "--enable-native-access=ALL-UNNAMED", "-jar", "application.jar", "--spring.config.additional-location=file:/config/"]
+          EXPOSE 25600
+          LABEL org.opencontainers.image.source="https://github.com/zolty-mat/komga"
+          EOF
 
       - name: Build & push to Harbor production
         run: |
@@ -62,5 +94,5 @@ jobs:
             -t "${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:${SHA_TAG}" \
             -t "${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:latest" \
             --push \
-            komga/build/jreleaser/package/docker/
-          echo "✅ Pushed ${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:${SHA_TAG}"
+            docker-context/
+          echo "Pushed ${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:${SHA_TAG}"
