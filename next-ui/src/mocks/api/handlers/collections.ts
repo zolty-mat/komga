@@ -12,7 +12,32 @@ const collection1 = {
   filtered: false,
 }
 
-const collections = [collection1]
+const collection2 = {
+  id: '026801S4HWRZB',
+  name: 'Modern Era',
+  ordered: false,
+  seriesIds: ['58', '59', '60'],
+  createdDate: new Date('2021-01-15T10:30:00Z'),
+  lastModifiedDate: new Date('2021-06-20T14:22:30Z'),
+  filtered: false,
+}
+
+const collections = [collection1, collection2]
+
+const collectionSeries1 = [
+  {
+    id: '57',
+    name: 'Amazing Comics',
+    booksCount: 10,
+    metadata: { title: 'Amazing Comics' },
+  },
+  {
+    id: '58',
+    name: 'Classic Tales',
+    booksCount: 5,
+    metadata: { title: 'Classic Tales' },
+  },
+]
 
 export const collectionsHandlers = [
   httpTyped.get('/api/v1/collections', ({ query, response }) => {
@@ -28,20 +53,36 @@ export const collectionsHandlers = [
       mockPage(selected, new PageRequest(Number(query.get('page')), Number(query.get('size')))),
     )
   }),
-  // httpTyped.get('/api/v1/series/{seriesId}', ({ params, response }) => {
-  //   if (params.seriesId === '404') return response(404).empty()
-  //   return response(200).json(
-  //     Object.assign({}, series1, { metadata: { title: `Series ${params.seriesId}` } }),
-  //   )
-  // }),
-  // http.get('*/api/v1/series/*/thumbnail', async () => {
-  //   // Get an ArrayBuffer from reading the file from disk or fetching it.
-  //   const buffer = await fetch(mockThumbnailUrl).then((response) => response.arrayBuffer())
-  //
-  //   return HttpResponse.arrayBuffer(buffer, {
-  //     headers: {
-  //       'content-type': 'image/jpg',
-  //     },
-  //   })
-  // }),
+
+  httpTyped.get('/api/v1/collections/{id}', ({ params, response }) => {
+    const collection = collections.find((c) => c.id === params.id)
+    if (!collection) return response(404).empty()
+    return response(200).json(collection)
+  }),
+
+  httpTyped.get('/api/v1/collections/{id}/series', ({ params, query, response }) => {
+    if (params.id === '026801S4HWRZA') {
+      return response(200).json(
+        mockPage(collectionSeries1, new PageRequest(Number(query.get('page')), Number(query.get('size')))),
+      )
+    }
+    return response(200).json(
+      mockPage([], new PageRequest(Number(query.get('page')), Number(query.get('size')))),
+    )
+  }),
+
+  httpTyped.patch('/api/v1/collections/{id}', ({ params, request, response }) => {
+    const body = request.body
+    const collection = collections.find((c) => c.id === params.id)
+    if (!collection) return response(404).empty()
+    Object.assign(collection, body, { lastModifiedDate: new Date() })
+    return response(204).json(collection)
+  }),
+
+  httpTyped.delete('/api/v1/collections/{id}', ({ params, response }) => {
+    const index = collections.findIndex((c) => c.id === params.id)
+    if (index === -1) return response(404).empty()
+    collections.splice(index, 1)
+    return response(204).empty()
+  }),
 ]
