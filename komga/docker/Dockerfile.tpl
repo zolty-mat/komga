@@ -51,7 +51,7 @@ COPY --from=builder /builder/extracted/snapshot-dependencies/ ./
 COPY --from=builder /builder/extracted/application/ ./
 ENV KOMGA_CONFIGDIR="/config"
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
-RUN addgroup --system komga && adduser --system --ingroup komga komga
+RUN groupadd --system komga && useradd --system --gid komga --no-create-home komga
 USER komga
 ENTRYPOINT ["java", "-Dspring.profiles.include=docker", "--enable-native-access=ALL-UNNAMED", "-jar", "application.jar", "--spring.config.additional-location=file:/config/"]
 EXPOSE 25600
