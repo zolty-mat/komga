@@ -18,6 +18,7 @@ import { clientSettingsHandlers } from '@/mocks/api/handlers/client-settings'
 import { collectionsHandlers } from '@/mocks/api/handlers/collections'
 import { oauth2Handlers } from '@/mocks/api/handlers/oauth2'
 import { searchHandlers } from '@/mocks/api/handlers/search'
+import { readingHistoryHandlers } from '@/mocks/api/handlers/reading-history'
 
 export const handlers = [
   ...actuatorHandlers,
@@ -32,6 +33,7 @@ export const handlers = [
   ...oauth2Handlers,
   ...pageHashesHandlers,
   ...readListsHandlers,
+  ...readingHistoryHandlers,
   ...referentialHandlers,
   ...releasesHandlers,
   ...searchHandlers,

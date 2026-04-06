@@ -223,6 +223,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/reading-history': RouteRecordInfo<
+      '/reading-history',
+      '/reading-history',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/search/': RouteRecordInfo<
       '/search/',
       '/search',
@@ -476,6 +483,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/media/missing-posters.vue': {
       routes:
         | '/media/missing-posters'
+      views:
+        | never
+    }
+    'src/pages/reading-history.vue': {
+      routes:
+        | '/reading-history'
       views:
         | never
     }
