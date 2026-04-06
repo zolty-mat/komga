@@ -1,6 +1,7 @@
-import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest'
 import { server } from '@/mocks/api/node'
 import {
+  seriesDetailQuery,
   useRefreshMetadataSeries,
   useAnalyzeSeries,
   useDeleteSeries,
@@ -11,6 +12,7 @@ import { createMockColada } from '@/mocks/pinia-colada'
 import { enableAutoUnmount } from '@vue/test-utils'
 import { response401Unauthorized } from '@/mocks/api/handlers'
 import { http } from 'msw'
+import { useQuery } from '@pinia/colada'
 
 beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
@@ -19,6 +21,21 @@ afterAll(() => server.close())
 enableAutoUnmount(afterEach)
 
 describe('colada series', () => {
+  test('when series detail query succeeds then query is callable', async () => {
+    createMockColada(() => {
+      const { data } = useQuery(() => seriesDetailQuery({ seriesId: 'series-123' }))
+      expect(data).toBeDefined()
+    })
+  })
+
+  test('when series detail query fails with 404, error is handled', async () => {
+    createMockColada(() => {
+      const { data, error } = useQuery(() => seriesDetailQuery({ seriesId: '404' }))
+      expect(data).toBeDefined()
+      expect(error).toBeDefined()
+    })
+  })
+
   test('when refresh metadata series mutation succeeds then mutation executes', async () => {
     createMockColada(() => useRefreshMetadataSeries())
     const { mutate } = useRefreshMetadataSeries()

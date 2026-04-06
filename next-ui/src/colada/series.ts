@@ -8,6 +8,8 @@ export const QUERY_KEYS_SERIES = {
   root: ['series'] as const,
   bySearch: (request: object) => [...QUERY_KEYS_SERIES.root, JSON.stringify(request)] as const,
   byId: (seriesId: string) => [...QUERY_KEYS_SERIES.root, seriesId] as const,
+  books: (seriesId: string, request: object) =>
+    [...QUERY_KEYS_SERIES.root, seriesId, 'books', JSON.stringify(request)] as const,
 }
 
 export const seriesListQuery = defineQueryOptions(
@@ -49,6 +51,33 @@ export const seriesDetailQuery = defineQueryOptions(({ seriesId }: { seriesId: s
       // unwrap the openapi-fetch structure on success
       .then((res) => res.data),
 }))
+
+export const seriesBooksListQuery = defineQueryOptions(
+  ({
+    seriesId,
+    search,
+    pageRequest,
+  }: {
+    seriesId: string
+    search: components['schemas']['BookSearch']
+    pageRequest?: PageRequest
+  }) => ({
+    key: QUERY_KEYS_SERIES.books(seriesId, { search: search, pageRequest: pageRequest }),
+    query: () =>
+      komgaClient
+        .POST('/api/v1/books/list', {
+          body: search,
+          params: {
+            query: {
+              ...pageRequest,
+            },
+          },
+        })
+        // unwrap the openapi-fetch structure on success
+        .then((res) => res.data),
+    placeholderData: (previousData) => previousData,
+  }),
+)
 
 export const useRefreshMetadataSeries = defineMutation(() =>
   useMutation({

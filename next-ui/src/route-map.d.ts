@@ -114,6 +114,7 @@ declare module 'vue-router/auto-routes' {
       | '/libraries/[id]/readlists'
       | '/libraries/[id]/recommended'
       | '/libraries/[id]/series'
+      | '/libraries/[id]/series/[seriesId]'
     >,
     '/libraries/[id]/books': RouteRecordInfo<
       '/libraries/[id]/books',
@@ -148,6 +149,13 @@ declare module 'vue-router/auto-routes' {
       '/libraries/:id/series',
       { id: ParamValue<true> },
       { id: ParamValue<false> },
+      | '/libraries/[id]/series/[seriesId]'
+    >,
+    '/libraries/[id]/series/[seriesId]': RouteRecordInfo<
+      '/libraries/[id]/series/[seriesId]',
+      '/libraries/:id/series/:seriesId',
+      { id: ParamValue<true>, seriesId: ParamValue<true> },
+      { id: ParamValue<false>, seriesId: ParamValue<false> },
       | never
     >,
     '/login': RouteRecordInfo<
@@ -335,6 +343,7 @@ declare module 'vue-router/auto-routes' {
         | '/libraries/[id]/readlists'
         | '/libraries/[id]/recommended'
         | '/libraries/[id]/series'
+        | '/libraries/[id]/series/[seriesId]'
       views:
         | 'default'
     }
@@ -365,6 +374,13 @@ declare module 'vue-router/auto-routes' {
     'src/pages/libraries/[id]/series.vue': {
       routes:
         | '/libraries/[id]/series'
+        | '/libraries/[id]/series/[seriesId]'
+      views:
+        | 'default'
+    }
+    'src/pages/libraries/[id]/series/[seriesId].vue': {
+      routes:
+        | '/libraries/[id]/series/[seriesId]'
       views:
         | never
     }
