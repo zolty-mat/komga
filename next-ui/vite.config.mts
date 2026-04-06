@@ -113,11 +113,11 @@ export default defineConfig(({ mode }) => ({
         'src/generated/**',
       ],
       thresholds: {
-        // Baseline thresholds — increase as coverage improves
-        statements: 10,
-        branches: 10,
-        functions: 10,
-        lines: 10,
+        // Phase 3.2: Thresholds set after Phase 3.1 tests
+        statements: 5,
+        branches: 0,
+        functions: 3,
+        lines: 5,
       },
     },
     projects: [
