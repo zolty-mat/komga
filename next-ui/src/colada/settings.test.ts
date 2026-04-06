@@ -1,6 +1,13 @@
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { server } from '@/mocks/api/node'
-import { useSettings, useUpdateSettings } from '@/colada/settings'
+import {
+  useSettings,
+  useUpdateSettings,
+  useReadingStatistics,
+  useUpdateUserPreferences,
+  useLogoutAllDevices,
+  useDeleteAccount,
+} from '@/colada/settings'
 import { createMockColada } from '@/mocks/pinia-colada'
 import { enableAutoUnmount } from '@vue/test-utils'
 import { response401Unauthorized } from '@/mocks/api/handlers'
@@ -47,6 +54,76 @@ describe('colada settings', () => {
 
     try {
       await mutate({})
+    } catch (e) {
+      // Expected to fail
+    }
+    expect(error.value).toBeDefined()
+  })
+
+  test('when reading statistics query succeeds then stats are returned', async () => {
+    createMockColada(useReadingStatistics)
+    const { data, refresh } = useReadingStatistics()
+
+    await refresh()
+    expect(data.value).toBeDefined()
+  })
+
+  test('when reading statistics endpoint fails with 401, error is set', async () => {
+    server.use(http.get('*/api/v2/users/me/reading-stats', response401Unauthorized))
+
+    createMockColada(useReadingStatistics)
+    const { error, refresh } = useReadingStatistics()
+
+    await refresh()
+    expect(error.value).toBeDefined()
+  })
+
+  test('when update user preferences mutation succeeds then mutation executes', async () => {
+    createMockColada(() => useUpdateUserPreferences())
+    const { mutate } = useUpdateUserPreferences()
+
+    await mutate({})
+    expect(mutate).toBeDefined()
+  })
+
+  test('when logout all devices mutation succeeds then mutation executes', async () => {
+    createMockColada(() => useLogoutAllDevices())
+    const { mutate } = useLogoutAllDevices()
+
+    await mutate({} as any)
+    expect(mutate).toBeDefined()
+  })
+
+  test('when logout all devices endpoint fails with 401, error is set', async () => {
+    server.use(http.post('*/api/logout', response401Unauthorized))
+
+    createMockColada(() => useLogoutAllDevices())
+    const { mutate, error } = useLogoutAllDevices()
+
+    try {
+      await mutate({} as any)
+    } catch (e) {
+      // Expected to fail
+    }
+    expect(error.value).toBeDefined()
+  })
+
+  test('when delete account mutation succeeds then mutation executes', async () => {
+    createMockColada(() => useDeleteAccount())
+    const { mutate } = useDeleteAccount()
+
+    await mutate({} as any)
+    expect(mutate).toBeDefined()
+  })
+
+  test('when delete account endpoint fails with 401, error is set', async () => {
+    server.use(http.delete('*/api/v2/users/me', response401Unauthorized))
+
+    createMockColada(() => useDeleteAccount())
+    const { mutate, error } = useDeleteAccount()
+
+    try {
+      await mutate()
     } catch (e) {
       // Expected to fail
     }

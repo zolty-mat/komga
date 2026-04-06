@@ -16,6 +16,16 @@ export const settings = {
   },
 }
 
+export const readingStatistics = {
+  totalBooksRead: 42,
+  currentMonthCount: 3,
+  readingStreak: 7,
+  averageBooksPerMonth: 5.25,
+  totalPagesRead: 12543,
+  lastReadDate: new Date('2025-07-24T14:30:00Z'),
+  longestReadingStreak: 45,
+}
+
 export const settingsHandlers = [
   httpTyped.get('/api/v1/settings', ({ response }) => response(200).json(settings)),
   httpTyped.patch('/api/v1/settings', ({ response }) => response(204).empty()),
