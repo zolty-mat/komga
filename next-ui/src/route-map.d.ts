@@ -76,6 +76,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/activity-feed': RouteRecordInfo<
+      '/activity-feed',
+      '/activity-feed',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/claim': RouteRecordInfo<
       '/claim',
       '/claim',
@@ -131,6 +138,7 @@ declare module 'vue-router/auto-routes' {
       | '/libraries/[id]/recommended'
       | '/libraries/[id]/series'
       | '/libraries/[id]/series/[seriesId]'
+      | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
     >,
     '/libraries/[id]/books': RouteRecordInfo<
       '/libraries/[id]/books',
@@ -180,12 +188,20 @@ declare module 'vue-router/auto-routes' {
       { id: ParamValue<true> },
       { id: ParamValue<false> },
       | '/libraries/[id]/series/[seriesId]'
+      | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
     >,
     '/libraries/[id]/series/[seriesId]': RouteRecordInfo<
       '/libraries/[id]/series/[seriesId]',
       '/libraries/:id/series/:seriesId',
       { id: ParamValue<true>, seriesId: ParamValue<true> },
       { id: ParamValue<false>, seriesId: ParamValue<false> },
+      | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
+    >,
+    '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews': RouteRecordInfo<
+      '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews',
+      '/libraries/:id/series/:seriesId/books/:bookId/reviews',
+      { id: ParamValue<true>, seriesId: ParamValue<true>, bookId: ParamValue<true> },
+      { id: ParamValue<false>, seriesId: ParamValue<false>, bookId: ParamValue<false> },
       | never
     >,
     '/login': RouteRecordInfo<
@@ -376,6 +392,12 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/activity-feed.vue': {
+      routes:
+        | '/activity-feed'
+      views:
+        | never
+    }
     'src/pages/claim.vue': {
       routes:
         | '/claim'
@@ -423,6 +445,7 @@ declare module 'vue-router/auto-routes' {
         | '/libraries/[id]/recommended'
         | '/libraries/[id]/series'
         | '/libraries/[id]/series/[seriesId]'
+        | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
       views:
         | 'default'
     }
@@ -468,12 +491,20 @@ declare module 'vue-router/auto-routes' {
       routes:
         | '/libraries/[id]/series'
         | '/libraries/[id]/series/[seriesId]'
+        | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
       views:
         | 'default'
     }
     'src/pages/libraries/[id]/series/[seriesId].vue': {
       routes:
         | '/libraries/[id]/series/[seriesId]'
+        | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
+      views:
+        | 'default'
+    }
+    'src/pages/libraries/[id]/series/[seriesId]/books/[bookId]/reviews.vue': {
+      routes:
+        | '/libraries/[id]/series/[seriesId]/books/[bookId]/reviews'
       views:
         | never
     }
