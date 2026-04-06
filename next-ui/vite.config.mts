@@ -104,6 +104,21 @@ export default defineConfig(({ mode }) => ({
   test: {
     coverage: {
       reporter: ['text', 'json-summary', 'json', 'html'],
+      include: ['src/**/*.{ts,vue}'],
+      exclude: [
+        'src/**/*.stories.ts',
+        'src/**/*.test.ts',
+        'src/**/*.d.ts',
+        'src/mocks/**',
+        'src/generated/**',
+      ],
+      thresholds: {
+        // Baseline thresholds — increase as coverage improves
+        statements: 10,
+        branches: 10,
+        functions: 10,
+        lines: 10,
+      },
     },
     projects: [
       {
@@ -112,6 +127,7 @@ export default defineConfig(({ mode }) => ({
           name: 'unit',
           environment: 'happy-dom',
           restoreMocks: true,
+          setupFiles: ['./src/test/setup.unit.ts'],
         },
       },
       {
