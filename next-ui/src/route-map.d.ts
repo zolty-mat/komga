@@ -62,6 +62,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/account/notifications': RouteRecordInfo<
+      '/account/notifications',
+      '/account/notifications',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/account/ui': RouteRecordInfo<
       '/account/ui',
       '/account/ui',
@@ -354,6 +361,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/account/details.vue': {
       routes:
         | '/account/details'
+      views:
+        | never
+    }
+    'src/pages/account/notifications.vue': {
+      routes:
+        | '/account/notifications'
       views:
         | never
     }

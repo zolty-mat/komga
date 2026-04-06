@@ -20,6 +20,7 @@ import { oauth2Handlers } from '@/mocks/api/handlers/oauth2'
 import { searchHandlers } from '@/mocks/api/handlers/search'
 import { readingHistoryHandlers } from '@/mocks/api/handlers/reading-history'
 import { analyticsHandlers } from '@/mocks/api/handlers/analytics'
+import { notificationHandlers } from '@/mocks/api/handlers/notifications'
 
 export const handlers = [
   ...actuatorHandlers,
@@ -32,6 +33,7 @@ export const handlers = [
   ...filesystemHandlers,
   ...historyHandlers,
   ...librariesHandlers,
+  ...notificationHandlers,
   ...oauth2Handlers,
   ...pageHashesHandlers,
   ...readListsHandlers,
