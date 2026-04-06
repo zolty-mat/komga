@@ -1,0 +1,63 @@
+name: Build Komga
+
+on:
+  push:
+    branches:
+      - next-ui
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  HARBOR_URL: harbor.k3s.internal.strommen.systems
+  IMAGE_NAME: production/komga
+
+jobs:
+  build:
+    runs-on: k3s-runner-v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Login to Docker Hub (avoid rate limits)
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Login to Harbor
+        run: |
+          echo "${{ secrets.HARBOR_PUSH_TOKEN }}" | \
+            docker login --username 'robot$ci-push' --password-stdin \
+            "${{ env.HARBOR_URL }}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend & Copy UI
+        run: ./gradlew :komga:webuiCopyIndex :komga:nextuiCopyIndex :komga:bootJar
+
+      - name: Build Next-UI
+        working-directory: next-ui
+        run: |
+          npm ci
+          npm run build
+
+      - name: Package Docker Image
+        run: ./gradlew jreleaserPackage
+
+      - name: Build & push to Harbor production
+        run: |
+          SHA_TAG="sha-$(git rev-parse --short HEAD)"
+          docker buildx build \
+            --platform linux/amd64 \
+            --provenance=false \
+            --cache-from type=registry,ref=${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:buildcache \
+            --cache-to   type=registry,ref=${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:buildcache,mode=max \
+            -t "${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:${SHA_TAG}" \
+            -t "${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:latest" \
+            --push \
+            komga/build/jreleaser/package/docker/
+          echo "✅ Pushed ${{ env.HARBOR_URL }}/${{ env.IMAGE_NAME }}:${SHA_TAG}"
