@@ -37,14 +37,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Backend (bootJar)
-        run: ./gradlew :komga:bootJar
-
       - name: Build Next-UI
         working-directory: next-ui
         run: |
           npm ci
-          npm run build
+          npm run build-only
+
+      - name: Build Backend with UI assets
+        run: ./gradlew :komga:nextuiCopyIndex :komga:webuiCopyIndex :komga:bootJar
 
       - name: Prepare Docker context
         run: |
