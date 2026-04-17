@@ -1,13 +1,13 @@
-FROM eclipse-temurin:17-jre AS builder
+FROM harbor.k3s.internal.strommen.systems/dockerhub-cache/library/eclipse-temurin:17-jre AS builder
 ARG JAR={{distributionArtifactFile}}
 WORKDIR /builder
 COPY assembly/${JAR} application.jar
 RUN java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
 # amd64 builder
-FROM ubuntu:24.10 AS build-amd64
+FROM harbor.k3s.internal.strommen.systems/dockerhub-cache/library/ubuntu:24.10 AS build-amd64
 ENV JAVA_HOME=/opt/java/openjdk
-COPY --from=eclipse-temurin:23-jre $JAVA_HOME $JAVA_HOME
+COPY --from=harbor.k3s.internal.strommen.systems/dockerhub-cache/library/eclipse-temurin:23-jre $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list.d/ubuntu.sources && \
     apt -y update && \
@@ -20,9 +20,9 @@ RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releas
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu"
 
 # arm64 builder
-FROM ubuntu:24.10 AS build-arm64
+FROM harbor.k3s.internal.strommen.systems/dockerhub-cache/library/ubuntu:24.10 AS build-arm64
 ENV JAVA_HOME=/opt/java/openjdk
-COPY --from=eclipse-temurin:23-jre $JAVA_HOME $JAVA_HOME
+COPY --from=harbor.k3s.internal.strommen.systems/dockerhub-cache/library/eclipse-temurin:23-jre $JAVA_HOME $JAVA_HOME
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 RUN sed -i -re 's/([a-z]{2}\.)?ports.ubuntu.com\/ubuntu-ports/old-releases.ubuntu.com\/ubuntu/g' /etc/apt/sources.list.d/ubuntu.sources && \
     apt -y update && \
@@ -35,7 +35,7 @@ RUN sed -i -re 's/([a-z]{2}\.)?ports.ubuntu.com\/ubuntu-ports/old-releases.ubunt
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/usr/lib/aarch64-linux-gnu"
 
 # arm builder: uses temurin-17, as arm32 support was dropped in JDK 21
-FROM eclipse-temurin:17-jre AS build-arm
+FROM harbor.k3s.internal.strommen.systems/dockerhub-cache/library/eclipse-temurin:17-jre AS build-arm
 RUN apt -y update && \
     apt -y install wget curl && \
     wget "https://github.com/pgaskin/kepubify/releases/latest/download/kepubify-linux-arm" -O /usr/bin/kepubify && \
